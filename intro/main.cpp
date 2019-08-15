@@ -15,11 +15,11 @@ struct Bridge
 {
     Bridge(int len)
     : length(len)
-    , time(0)
+    , time(0.0)
     {
     }
     int length;
-    int time;
+    double time;
 };
 
 void show(std::vector<std::vector<double>> groups, std::vector<Bridge> bridges)
@@ -54,51 +54,72 @@ int main()
     {
         std::sort(groups[k].begin(), groups[k].end(), std::greater<double>());
         show(groups, bridges);
-        while (!groups[k].empty())
+
+        auto& bridge = bridges[k];
+        for (size_t n = groups[k].size(); n > 0; n = groups[k].size())
         {
-            auto& bridge = bridges[k];
-            if (groups[k].size() == 1)
+            if (n == 1)
             {
+                // one-way trip
+                // timing for hiker [0]
                 bridge.time += bridge.length / groups[k][0];
+
+                // crossing for the last hiker
                 groups[k+1].push_back(groups[k][0]);
                 groups[k].pop_back();
             }
-            else if (groups[k].size() == 2)
+            else if (n == 2)
             {
+                // one-way trip
+                // timing for hikers [0] and [1]
                 bridge.time += bridge.length / groups[k][1];
-                groups[k+1].push_back(groups[k][0]);
+
+                // crossing for the last 2 hikers
                 groups[k+1].push_back(groups[k][1]);
+                groups[k+1].push_back(groups[k][0]);
                 groups[k].pop_back();
                 groups[k].pop_back();
             }
-            else if (groups[k].size() == 3)
+            else if (n == 3)
             {
-                bridge.time += bridge.length / groups[k][0];
+                // first round-trip
+                // timing for the fastest pair of hikers [0] and [1] ([0] crosses back)
                 bridge.time += bridge.length / groups[k][1];
+                bridge.time += bridge.length / groups[k][0];
+
+                // second one-way trip
+                // timing for the slowest pair of hikers [2] and [0]
                 bridge.time += bridge.length / groups[k][2];
-                groups[k+1].push_back(groups[k][0]);
-                groups[k+1].push_back(groups[k][1]);
+
+                // transfer for the last 3 hikers
                 groups[k+1].push_back(groups[k][2]);
+                groups[k+1].push_back(groups[k][1]);
+                groups[k+1].push_back(groups[k][0]);
                 groups[k].pop_back();
                 groups[k].pop_back();
                 groups[k].pop_back();
             }
             else
             {
-                for (size_t i = 0; i < groups[k].size()/2; i+=2)
-                {
-                    size_t j = (groups[k].size() - 1) - i;
-                    bridge.time += bridge.length / groups[k][i];
-                    bridge.time += bridge.length / groups[k][i+1];
-//                    bridge.time += bridge.length / groups[k][j-1];
-                    bridge.time += bridge.length / groups[k][j];
-                    groups[k+1].push_back(groups[k][j-1]);
-                    groups[k+1].push_back(groups[k][j]);
-                    groups[k].pop_back();
-                    groups[k].pop_back();
-                }
+                // first round-trip
+                // timing for the fastest pair of hikers [0] and [1] ([0] crosses back)
+                bridge.time += bridge.length / groups[k][1];
+                bridge.time += bridge.length / groups[k][0];
+
+                // second round-trip
+                // timing for the slowest pair of hikers [j] and [j-1] ([1] crosses back)
+                size_t j = n - 1;
+                bridge.time += bridge.length / groups[k][j];
+                bridge.time += bridge.length / groups[k][1];
+
+                // transfer the slowest pair of hikers
+                groups[k+1].push_back(groups[k][j-1]);
+                groups[k+1].push_back(groups[k][j]);
+                groups[k].pop_back();
+                groups[k].pop_back();
             }
-            std::sort(groups[k+1].begin(), groups[k+1].end(), std::greater<double>());
+
+            // display the progress as we transfer the hikers
             show(groups, bridges);
         }
     }
