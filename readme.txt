@@ -1,27 +1,43 @@
-# generate ssh key id_rsa.pub
-cd ~/.ssh
-ssh-keygen -t rsa -C "email@address.com"
+workspace/intro
 
-# copy key to github
-profile -> edit profile -> SSH & GPG Keys
+This algo computes the crossing time and total distance
+The assumption is made that a faster hiker on the right side of the bridge
+can't help the hikers on the left side to improve the crossing time.
+Each group on the left side independently has to cross the bridge and
+then join the group of hikers on the right side.
 
-# check ssh connection to github
-ssh -T git@github.com
+[constantin.musteata@localhost intro]$ ./run.sh
+open file: intro/intro.yaml
+bridge 0: [100 ft, 17 min]
+bridge 1: [250 ft, 132.5 min]
+bridge 2: [150 ft, 95.5 min]
+overall : [500 ft, 245 min]
+begin time: Tue Aug 20 16:08:40 2019
+  end time: Tue Aug 20 16:08:40 2019
+   elapsed: 0.000279383 seconds
 
-# init remote git repository
-profile -> edit profile -> add repository -> workspace
+Obs: this algorithm is using std::vector as underlying data-structure for
+     moving the hikers accross the bridge
 
-# config local git
-git config --global user.name "First Last"
-git config --global user.email "email@address.com"
-git config --global color.ui true
-git config --global core.editor vi
-git config --global push.default simple
+workspace/intro2
 
-# init local git repository
-cd ~/workspace
-git init
+This algo computes the crossing time and total distance
+The assumption is made that a faster hiker on the right side
+may help the hikers on the left side to improve the crossing time
+After each pair-crossing from the left side to the right side
+the ranking of the hikers is reevaluated in order to establish
+the fastest hiker to return the torch back to the left side.
 
-# set origin
-git remote add origin git@github.com:username/workspace.git
-git push [-u | --set-upstream] origin master
+[constantin.musteata@localhost intro2]$ ./run.sh
+open file: intro2/intro.yaml
+bridge 0: [100 ft, 17 min]
+bridge 1: [250 ft, 132.5 min]
+bridge 2: [150 ft, 95.5 min]
+overall : [500 ft, 245 min]
+begin time: Tue Aug 20 16:08:40 2019
+  end time: Tue Aug 20 16:08:40 2019
+   elapsed: 0.000471861 seconds
+
+Obs: this algorithm is using std::deque as underlying data-structure for
+     moving the hikers back and forth accross the bridge
+
