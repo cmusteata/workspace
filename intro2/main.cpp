@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <deque>
 #include <chrono>
 #include <ctime>
 #include <cassert>
@@ -158,16 +159,17 @@ struct Bridge
 };
 
 // This Algo computes the crossing time and total distance
-// The assumption is made that a faster hiker in the [k + 1] group
-// can't help the hikers in [k] group to improve the crossing time
-// Each group [k] independently has to cross the bridge and then
-// join the [k+1] group
+// The assumption is made that a faster hiker on the right side
+// may help the hikers on the left side to improve the crossing time
+// After each pair-crossing from the left side to the right side
+// the ranking of the hikers is reevaluated in order to estalish
+// the fastes kiker to return the torch back to the left side.
 
 class Algo
 {
     Bridge result;
     std::vector<Bridge> bridges;
-    std::vector<std::vector<double>> groups;
+    std::vector<std::deque<double>> groups;
 
     void show() const
     {
@@ -203,96 +205,142 @@ public:
         Bridge total;
         for (size_t k = 0; k < bridges.size(); ++k)
         {
-            std::sort(groups[k].begin(), groups[k].end(), std::greater<double>());
+            auto& lhs = groups[k];   // left  hand side of the bridge  
+            auto& rhs = groups[k+1]; // right hand side of the bridge
+            std::sort(lhs.begin(), lhs.end(), std::greater<double>());
             show();
 
-            // The top 2 fastest hikers in the first group cross together
-            // while the fastest in the first group returns back to handover
-            // the torch to the bottom 2 slowest hikers in the first group.
-            // The bottom 2 slowest hikers cross the bridge while the second
-            // fastest brings the torch back to the initial group of hikers.
+            // The top 2 fastest hikers on the left side cross together at the
+            // pace of the second fastest. After this first pair-crossing we
+            // reevaluate the fastest hikers on the right. The fastest hiker on
+            // the right group returns with the torch and hands it over to the
+            // slowest pair of hikers on the left side. The slowest pair of hikers
+            // finally crosses the bridge. After this second pair-crossing we
+            // have to reevaluate again the fastest hiker on the right side.
+            // The fastest hiker on the right side returns with the torch.
+            // At this point the fastest hikers in both left and right side
+            // are on the left side helping the rest of the group to cross.
             // 
-            // Note that the top 2 fastest hikers always return back so
-            // only the timing is incremented while not necessary to phisically
-            // move the hikers from one container to another back and forth.
-            // While for the bottom 2 slowest hikers we both increment the timer
-            // and phisically move the hikers to the next container.
-            // 
-            // I repeat this same algorithm for each bridge by removing the
+            // We repeat this same algorithm for each bridge by removing the
             // bottom 2 slowest hikers at each iteration until 1, 2 or 3 hikers
-            // are left in the group. From there there's no particular variation
+            // are left in the group. From there, there's no particular variation
             // to improve any timing therefore I consider them particular cases.
             //
-            // The hikers are represented by their pace and I sort them before
-            // crossing each bridge. The choice of using a std::vector to hold
-            // the hikers and std::sort sorting algorithm with [n*log(n)] time
-            // complexity potentially may be faster than other data-structures
-            // (have to prove) for a reasonable numbers of hikers in each group
-            // as long as each group fits in a line of CPU cache in order to
-            // avoid false sharing at sorting.
+            // The hikers are represented by their pace and we sort them after
+            // each bridge crossing. I use std::deque to move the hikers back and
+            // forth and std::sort algorithm with [n*log(n)] time complexity.
 
-            auto& bridge = bridges[k];
-            for (size_t n = groups[k].size(); n > 0; n = groups[k].size())
+            auto &bridge = bridges[k];
+            for (size_t n = lhs.size(); n > 0; n = lhs.size())
             {
                 if (n == 1)
                 {
                     // one-way trip
                     // timing for hiker [0]
-                    bridge.time += bridge.length / groups[k][0];
+                    bridge.time += bridge.length / lhs[0];
 
-                    // transfer for the last hiker
-                    groups[k+1].push_back(groups[k][0]);
-                    groups[k].pop_back();
+                    // transfer for the last hikers
+                    while (!lhs.empty())
+                    {
+                        rhs.push_back(lhs.back());
+                        lhs.pop_back();
+                    }
                 }
                 else if (n == 2)
                 {
                     // one-way trip
                     // timing for hikers [0] and [1]
-                    bridge.time += bridge.length / groups[k][1];
+                    bridge.time += bridge.length / lhs[1];
 
-                    // transfer for the last 2 hikers
-                    groups[k+1].push_back(groups[k][1]);
-                    groups[k+1].push_back(groups[k][0]);
-                    groups[k].pop_back();
-                    groups[k].pop_back();
+                    // transfer for the last hikers
+                    while (!lhs.empty())
+                    {
+                        rhs.push_back(lhs.back());
+                        lhs.pop_back();
+                    }
                 }
                 else if (n == 3)
                 {
-                    // first round-trip
-                    // timing for the fastest pair of hikers [0] and [1] ([0] crosses back)
-                    bridge.time += bridge.length / groups[k][1];
-                    bridge.time += bridge.length / groups[k][0];
+                    // timing for the fastest pair of hikers from the
+                    // left side lhs[0] & lhs[1] at the pace of lhs[1]
+                    bridge.time += bridge.length / lhs[1];
 
-                    // second one-way trip
-                    // timing for the slowest pair of hikers [2] and [0]
-                    bridge.time += bridge.length / groups[k][2];
+                    // move the fastest hiker from left to the right side
+                    // and reevaluate the fastest hiker on the right side
+                    rhs.push_front(lhs.front());
+                    lhs.pop_front();
+                    std::sort(rhs.begin(), rhs.end(), std::greater<double>());
+                    show();
 
-                    // transfer for the last 3 hikers
-                    groups[k+1].push_back(groups[k][2]);
-                    groups[k+1].push_back(groups[k][1]);
-                    groups[k+1].push_back(groups[k][0]);
-                    groups[k].pop_back();
-                    groups[k].pop_back();
-                    groups[k].pop_back();
+                    // move the fastest hiker from right to the left side
+                    // and reevaluate the fastest hiker on the left side
+                    lhs.push_front(rhs.front());
+                    rhs.pop_front();
+                    std::sort(lhs.begin(), lhs.end(), std::greater<double>());
+                    show();
+
+                    // timing for the fastest hiker from the left side
+                    // who just returned the torch from the right side
+                    bridge.time += bridge.length / lhs[0];
+
+                    // timing for the hikers lhs[2] & lhs[0] at the pace of lhs[2]
+                    bridge.time += bridge.length / lhs[2];
+
+                    // move all hikers from the left to the right side
+                    while (!lhs.empty())
+                    {
+                        rhs.push_back(lhs.back());
+                        lhs.pop_back();
+                    }
                 }
                 else
                 {
-                    // first round-trip
-                    // timing for the fastest pair of hikers [0] and [1] ([0] crosses back)
-                    bridge.time += bridge.length / groups[k][1];
-                    bridge.time += bridge.length / groups[k][0];
+                    // timing for the fastest pair of hikers from the
+                    // left side lhs[0] & lhs[1] at the pace of lhs[1]
+                    bridge.time += bridge.length / lhs[1];
 
-                    // second round-trip
-                    // timing for the slowest pair of hikers [j] and [j-1] ([1] crosses back)
+                    // NOTE: in real life the fastest hikers don't return the
+                    // torch together as in this code. They return the torch
+                    // at different points in time. This is just a code
+                    // optimization since after the first pair-crossing and
+                    // ranking reevaluation the fastest pair of hikers in both
+                    // groups is not going to change and they certainly
+                    // return afer the first 2 pair-crossings.
+
+                    // move pair of fastest hikers from left to the right side
+                    // and reevaluate the fastest hikers on the right side.
+                    rhs.push_front(lhs.front());
+                    lhs.pop_front();
+                    rhs.push_front(lhs.front());
+                    lhs.pop_front();
+                    std::sort(rhs.begin(), rhs.end(), std::greater<double>());
+                    show();
+
+                    // move pair of fastest hikers from right to the left side
+                    // and reevaluate the fastest hikers on the left side
+                    lhs.push_front(rhs.front());
+                    rhs.pop_front();
+                    lhs.push_front(rhs.front());
+                    rhs.pop_front();
+                    std::sort(lhs.begin(), lhs.end(), std::greater<double>());
+                    show();
+
+                    // timing for the fastest hiker from the right side
+                    // who just returned the torch from the right side
+                    bridge.time += bridge.length / lhs[0];
+
+                    // timing for the slowest pair of hikers from the
+                    // left side lhs[j] and lhs[j-1] at the pace of lhs[j]
                     size_t j = n - 1;
-                    bridge.time += bridge.length / groups[k][j];
-                    bridge.time += bridge.length / groups[k][1];
+                    bridge.time += bridge.length / lhs[j];
+                    bridge.time += bridge.length / lhs[1];
 
-                    // transfer the slowest pair of hikers
-                    groups[k+1].push_back(groups[k][j-1]);
-                    groups[k+1].push_back(groups[k][j]);
-                    groups[k].pop_back();
-                    groups[k].pop_back();
+                    // move the slowest pair of hikers from left to the right side
+                    for (int i = 0; i < 2; ++i)
+                    {
+                        rhs.push_back(lhs.back());
+                        lhs.pop_back();
+                    }
                 }
 
                 // display the progress as we transfer the hikers
