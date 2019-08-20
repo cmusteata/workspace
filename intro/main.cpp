@@ -161,7 +161,7 @@ struct Bridge
 // The assumption is made that a faster hiker in the [k + 1] group
 // can't help the hikers in [k] group to improve the crossing time
 // Each group [k] independently has to cross the bridge and then
-// join the [n+1] group
+// join the [k+1] group
 
 class Algo
 {
@@ -192,6 +192,9 @@ public:
             for (double pace : y.paces)
                 group.push_back(pace);
         }
+
+        // add [n + 1] group to help transfer
+        // the hikers across the [n] bridge
         groups.emplace_back();
     }
 
@@ -202,6 +205,31 @@ public:
         {
             std::sort(groups[k].begin(), groups[k].end(), std::greater<double>());
             show();
+
+            // The top 2 fastest hikers in the first group cross together
+            // while the fastest in the first group returns back to handover
+            // the torch to the bottom 2 slowest hikers in the first group.
+            // The bottom 2 slowest hikers cross the bridge while the second
+            // fastest brings the torch back to the initial group of hikers.
+            // 
+            // Note that the top 2 fastest hikers always return back so
+            // only the timing is incremented while not necessary to phisically
+            // move the hikers from one container to another back and forth.
+            // While for the bottom 2 slowest hikers we both increment the timer
+            // and phisically move the hikers to the next container.
+            // 
+            // I repeat this same algorithm for each bridge by removing the
+            // bottom 2 slowest hikers at each iteration until 1, 2 or 3 hikers
+            // are left in the group. From there there's no particular variation
+            // to improve any timing therefore I consider them particular cases.
+            //
+            // The hikers are represented by their pace and I sort them before
+            // crossing each bridge. The choice of using a std::vector to hold
+            // the hikers and std::sort sorting algorithm with [n*log(n)] time
+            // complexity potentially may be faster than other data-structures
+            // (have to prove) for a reasonable numbers of hikers in each group
+            // as long as each group fits in a line of CPU cache in order to
+            // avoid false sharing at sorting.
 
             auto& bridge = bridges[k];
             for (size_t n = groups[k].size(); n > 0; n = groups[k].size())
@@ -275,6 +303,7 @@ public:
             total += bridge;
         }
 
+        // store the result
         result = total;
     }
 
@@ -312,6 +341,7 @@ int main(int argc, char* argv[])
     std::cout << "begin time: " << std::ctime(&begin_time);
     std::cout << "  end time: " << std::ctime(&end_time);
     std::cout << "   elapsed: " << elapsed_seconds.count() << " seconds"  << std::endl;
+
     return 0;
 }
 
