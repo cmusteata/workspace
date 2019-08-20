@@ -1,0 +1,18 @@
+---
+# This file contains information for a list of bridges
+# For each bridge is given a set of 2 parameters
+# length: length of the bridge [feet]
+# paces: hiking-pace list for this bridge [ft/min] 
+- length: 100
+  paces: 
+  - 100
+  - 50
+  - 20
+  - 10
+- length: 250
+  paces: 
+  - 2.5
+- length: 150
+  paces: 
+  - 25
+  - 15
