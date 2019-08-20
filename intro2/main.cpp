@@ -6,128 +6,12 @@
 #include <ctime>
 #include <cassert>
 #include <fstream>
-
-// struct BRIDGE
-//
-// This data-structure is used
-// internally by the Yaml parser
-
-struct BRIDGE
-{
-    int length;
-    std::vector<double> paces;
-};
-
-// class Yaml
-//
-// This class is not intended to parse any generic .yaml file
-// The sole purpose of this class is to parse the intro.yaml
-//
-// The following assumptions are made in order to parse:
-// 1) The intro.yaml file is a valid yaml formatted file
-// 2) All comments start at index 0
-// 3) The sequence indicator is "- "
-// 4) The keyvalue indicator is ": "
-// 5) All sequences in a block are aligned relative to the same column
-// 6) The underlying data structure of 'Yaml' is a sequence of BRIDGES
-//    BRIDGE entries in the intro.yaml file start at index 0
-// 7) Each BRIDGE has two key-value pairs starting at index 2
-//    length: scalar-value
-//    paces: list of scalar-values
-
-class Yaml
-{
-    std::string fname;
-    std::ifstream ifs;
-    std::vector<BRIDGE> data;
-
-    void parse(const std::string& line)
-    {
-        // ignore all comments
-        if (line.find("# ") == 0)
-            return;
-        
-        // looking for a sequence indicator
-        std::size_t pos = line.find("- ");
-        if (pos != std::string::npos)
-        {
-            if (pos == 0)
-            {
-                // emplace an empty  BRIDGE entry
-                data.emplace_back();
-                
-                std::cerr << "[" << pos << "] " << "- " << std::endl;
-            }
-            else
-            {
-                assert(data.empty() == false);
-
-                // emplace a new hiking-pace for this BRIDGE
-                std::string value = line.substr(pos += 2);
-                data.back().paces.emplace_back(std::stod(value));
-
-                std::cerr << "[" << pos << "] " << "  - " << value << std::endl;
-            }
-        }
-
-        // looking for a key-value indicator
-        pos = line.find(": ");
-        if (pos != std::string::npos)
-        {
-            const std::string key1 = "length";
-            const std::string key2 = "paces";
-
-            if (line.find(key1, 2) != std::string::npos)
-            {
-                assert(data.empty() == false);
-
-                // sent the length of the bridge
-                std::string value = line.substr(pos += 2);
-                data.back().length = std::stoi(value);
-
-                std::cerr << "[" << pos << "]   " << key1 << ": " << value << std::endl;
-            }
-            else if (line.find(key2, 2) != std::string::npos)
-            {
-                std::cerr << "[" << pos << "]   " << key2 << ": " << std::endl;
-            }
-        }
-    }
-
-public:
-    Yaml(const std::string& filename)
-    : fname(filename)
-    , ifs(filename)
-    {
-    }
-
-    ~Yaml()
-    {
-        ifs.close();
-    }
-    
-    void parse()
-    {
-        assert(ifs.is_open() == true);
-
-        std::string line;
-        getline(ifs, line);
-        assert(line == "---");
-
-        while (getline(ifs, line))
-            parse(line);
-    }
-
-    const std::vector<BRIDGE>& get() const
-    {
-        return data;
-    }
-};
+#include "yaml.h"
 
 // Data structure used internally by the 'class Algo'
 // to compute the crossing distance & the crosing time
 
-struct Bridge
+struct Bridge final
 {
     int length;
     double time;
@@ -165,7 +49,7 @@ struct Bridge
 // the ranking of the hikers is reevaluated in order to establish
 // the fastest hiker to return the torch back to the left side.
 
-class Algo
+class Algo final
 {
     Bridge result;
     std::vector<Bridge> bridges;
