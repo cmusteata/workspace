@@ -1,0 +1,231 @@
+    3  yum install net-tools
+    4  service nework status
+    5  /etc/init.d/network status
+    6  /etc/init.d/network reboot
+    7  /etc/init.d/network restart
+    8  /etc/init.d/network reload
+   13  yum check-updates
+   14  yum install epel-release
+   15  yum install wireless-tools
+   18  dmesg | grep iwl
+   19  dmesg | grep net
+   20  lspci
+   22  yum -y install lspci
+   24  yum check-updates | less
+   28  NetworkManager
+   29  yum -y install NetworkManager
+   44  NetworkManager-wifi
+   45  yum -y install NetworkManager-wifi*
+   47  iw dev
+   48  ip link show wlp3s0
+   50  iw link set wlp3s0 up
+   51  iw wlp3s0 link
+   53  ifconfig
+   54  iwconfig
+   61  iwlist
+   62  iwlist wlp3s0
+   64  iwlist wlp3s0 scan | less
+   65  iw wlp3s0 link
+   66  /etc/init.d/network restart
+   67  ifconfig enp0s25 up
+   68  /etc/init.d/network restart
+   69  iwlist
+   71  iwlist scan bulinux
+   74  iw wlp3s0 link
+   75  ip enp0s25 link
+   76  iw enp0s25 link
+   77  if enp0s25 link
+   78  ifconfig enp0s25 link
+   98  vi /usr/sbin/wpa_passphrase
+  101  find / -name wpa_passphrase.conf
+  102  find / -name wpa_passphrase
+  103  find / -name wpa_*
+  107  wpa_passphrase bulinux spanaccumac > /etc/wpa_supplicant/wpa_passphrase.conf
+  108  wpa_supplicant -Dwext -iwlp3s0 -c/etc/wpa_supplicant/wpa_passphrase.conf
+  111  vi /etc/wpa_supplicant/wpa_passphrase.conf 
+  113  vi /etc/wpa_supplicant/wpa_supplicant.conf 
+  117  iw wlp3s0 up
+  119  ifconfig wlp3s0 up
+  125  ifconfig enp0s25 down
+  128  wpa_supplicant -Dwext -iwlp3s0 -c/etc/wpa_supplicant/wpa_passphrase.conf
+  136  dhclient wlp3s0
+  139  vi /etc/sysconfig/network-scripts/ifcfg-bulinux
+  141  ifconfig wlp3s0 down
+  143  ifconfig wlp3s0 up
+  150  kill wpa_supplicant
+  151  kill -l
+  152  killall -l
+  153  killall
+  155  wpa_supplicant -B -Dwext -iwlp3s0 -c/etc/wpa_supplicant/wpa_passphrase.conf -dd
+  156  dhclient wlp3s0
+  158  iw wlp3s0 link
+  161  yum install lynx
+  162  lynx
+  167  find / -name wpa*.conf | less
+  168  ls /etc/wpa_supplicant/
+  169  wget
+  170  yum -y install wget
+  171  yum check-updates
+  174  ping www.google.com
+  175  wpa_supplicant -B -Dwext -iwlp3s0 -c/etc/wpa_supplicant/wpa_passphrase.conf -dd
+  176  iw wlp3s0 link
+  187  ifconfig enp0s25 up
+  189  dhclient wlp3s0
+  191  /etc/init.d/network restart
+  192  iw wlp3s0 link
+  193  ping www.google.com
+  194  ifconfig enp0s25 down
+  197  ping www.google.com
+  198  iw wlp3s0 link
+  201  /etc/init.d/network restart
+  202  dhclient wlp3s0
+  203  ping www.google.com
+  204  iw wlp3s0 link
+  205  ifconfig enp0s25 down
+  206  iw wlp3s0 link
+  207  dhclient wlp3s0
+  208  /etc/init.d/network restart
+  209  dhclient wlp3s0
+  210  ifconfig enp0s25 down
+  211  ifconfig
+  212  /etc/init.d/network restart
+  213  /etc/init.d/network status
+  214  wpa_supplicant -B -Dwext -iwlp3s0 -c/etc/wpa_supplicant/wpa_passphrase.conf -dd
+  215  dhclient wlp3s0
+  216  /etc/init.d/network restart
+  217  dhclient wlp3s0
+  218  ping www.google.com
+  219  dhclient wlp3s0
+  220  ping www.google.com
+  221  killall wpa_supplicant
+  222  ifconfig
+  223  iwconfig
+  224  wpa_supplicant -B -Dwext -iwlp3s0 -c/etc/wpa_supplicant/wpa_passphrase.conf -dd
+  225  dhclient wlp3s0
+  226  iwconfig
+  227  wpa_supplicant -B -Dwext -iwlp3s0 -c/etc/wpa_supplicant/wpa_passphrase.conf -dd
+  228  killall wpa_supplicant
+  229  ifconfig
+  230  wpa_supplicant -B -Dwext -iwlp3s0 -c/etc/wpa_supplicant/wpa_passphrase.conf -dd
+  231  dhclient wlp3s0
+  232  /etc/init.d/network restart
+  237  wpa_supplicant -B -Dwext -iwlp3s0 -c/etc/wpa_supplicant/wpa_passphrase.conf -dd
+  238  dhclient wlp3s0
+  239  ifconfig
+  241  find / -name bulinux*
+  242  find / -name wpa*
+  243  ifconfig
+  244  reboot
+  255  ifconfig enp0s25 down
+  256  ping www.hotmail.com
+  257  ping google.com
+  258  ifconfig
+  259  iwconfig
+  260  /etc/init.d/network status
+  262  /etc/init.d/network reload
+  263  /etc/init.d/network restart
+  264  dhclient wlp3s0
+  265  killall wpa_supplicant
+  267  ping 10.0.1.1
+  268  ifconfig enp0s25 down
+  269  ifconfig wlp3s0 down
+  270  ifconfig wlp3s0 up
+  271  ifconfig enp0s25 up
+  272  ifconfig
+  273  ping 10.0.1.1
+  276  dhclient wlp3s0
+  277  /etc/init.d/network restart
+  279  systemctl | grep wlp*
+  281  iwlist wld3s0
+  284  iwlist wlp3s0 scan
+  285  iwlist wlp3s0 scan | sort
+  286  iwlist wlp3s0 scan | grep bulinux
+  288  iwlist wlp3s0 scan | more
+  301  lynx www.hotmail.com
+  303  yum -y install links
+  305  links www.hotmail.com
+  307  yum -y install killall
+  308  yum -y install psmisc
+  310  iw wlp3s0 info
+  311  iw wlp3s0 infoclear
+  315  reboot
+  317  ifconfig
+  318  ping 10.0.1.1
+  332  mtab
+  333  yum -y install mtab
+  334  yum -y install mtab*
+  335  yum -y install usbutils
+  337  lsusb
+  338  ls
+  339  ls -la
+  340  ls -la /dev/disk/by-label
+  341  ls -la /dev/disk/by-id
+  342  ls -la /dev/disk/by-label
+  343  ls -la /dev/disk/by-id
+  344  mount /dev/disk/by-id/sdd1 /mnt/sdd1
+  345  mount /dev/disk/by-id/sdd /mnt/sdd
+  346  mount /dev/disk/by-label/ANACONDA /mnt/ANACONDA
+  351  md /mnt/ANCONDA
+  353  mount -t fstype /dev/disk/by-id/sdd1 /mnt/sdd1
+  356  mkdir /mnt/pny
+  357  mkdir /mnt/sandisk
+  358  rd /mnt/pny
+  359  cd /mnt
+  360  rd /pny
+  367  mount -t fstype /dev/disk/by-id/sdd1 /mnt/sandisk
+  368  mount -t FSTYPE /dev/disk/by-id/sdd1 /mnt/sandisk
+  369  mount /dev/sdd1 /mnt/sandisk
+  370  mount /dev/sdc1 /mnt/pny
+  375  umount /mnt/pny
+  376  umount /mnt/sandisk
+  378  dmesg
+  379  fdisk -l
+  382  du
+  384  du -h
+  386  chkdsk
+  387  di
+  388  fdisk -l
+  391  ls /mnt/sandisk
+  392  rd /mnt/sandisk
+  398  remove /mnt/sandisk
+  399  mount /dev/sdc1 /mnt/pny
+  400  find /mnt/pny -name wpa*
+  402  umoun /mnt/sandisk
+  403  umoun /mnt/sandiskcd ..
+  404  umoun /mnt/sandiskd ...
+  408  halt
+  409  restart
+  410  shutdown
+  412  dmesg
+  413  dmesg | grep net
+  414  dmesg | grep iwl
+  415  /etc/init.d/network restart
+  416  /etc/init.d/network reload
+  417  /etc/init.d/network status
+  418  lspci
+  420  iwlist
+  421  iwlist scan
+  422  iwlist scan essid
+  423  iwlist scan essid clearpoolguest
+  424  iwlist scan essid *guest
+  425  iwlist scan *guest
+  426  iwlist scan | grep guest
+  427  iwlist scan | grep *guest
+  428  iwlist scan essid | grep *guest
+  429  iwlist scan essid | grep guest
+  430  iwlist scan essid
+  431  iwlist scan
+  432  iwlist scan ClearpoolGuest
+  433  iwlist scan essid ClearpoolGuest
+  434  iwlist
+  435  iwlist wlp3s0 scanning essid ClearpoolGuest
+  436  iwlist wlp3s0 scan essid ClearpoolGuest
+  437  iwlist scan | less
+  438  reboot
+  441  yum -y install locate
+  443  yum check-update locate
+  446  locate
+  448  yum -y update
+  449  yum -y install mlocate
+  450  mlocate
+  452  yum -y install mlocate | less
