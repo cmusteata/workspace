@@ -1,23 +1,26 @@
+#include <iostream>
 #include "ring_buffer.h"
 
 ring_buffer::ring_buffer()
 : buffer(nullptr)
 , rows(1000)
 , cols(256)
+, size(1000*256)
 , i(0)
 , j(256)
-{    
-    buffer = static_cast<char*>(operator new(rows * cols));
+{
+    buffer = static_cast<char*>(operator new(size));
 }
 
-ring_buffer::ring_buffer(int num_rows, int num_cols)
+ring_buffer::ring_buffer(long num_rows, long num_cols)
 : buffer(nullptr)
 , rows(num_rows)
 , cols(num_cols)
+, size(num_rows*num_cols)
 , i(0)
 , j(num_cols)
-{    
-    buffer = static_cast<char*>(operator new(rows * cols));
+{
+    buffer = static_cast<char*>(operator new(size));
 }
 
 ring_buffer::~ring_buffer()
@@ -26,10 +29,10 @@ ring_buffer::~ring_buffer()
 }
 
 inline 
-int ring_buffer::next(int index) const
+long ring_buffer::next(long index) const
 {
-    int n = index + cols;
-    return n < rows * cols ? n : 0;
+    long n = index + cols;
+    return n < size ? n : 0;
 }
 
 inline
@@ -39,25 +42,46 @@ bool ring_buffer::empty() const
 }
 
 inline
+bool ring_buffer::full() const
+{
+    return next(j) == i;
+}
+
+inline
 char* ring_buffer::front()
 {
-    return &buffer[i];
+    long next_i = next(i);
+    if (next_i == j) // empty
+    {
+        std::cerr << "queue is empty" << std::endl;
+        return nullptr;
+    }
+
+    return &buffer[i = next_i];
 }
 
 inline
 char* ring_buffer::back()
 {
-    return &buffer[j];
-}
+    long next_j = next(j);
+    if (next_j == i) // full
+    {
+        std::cerr << "queue is full" << std::endl;
+        return nullptr;
+    }
 
+    return &buffer[j = next_j];
+}
+/*
 inline
 void ring_buffer::push_front()
 {
-    ++i;
+    i = next(i);
 }
 
 inline
 void ring_buffer::push_back()
 {
-    ++j;
+    j = next(j);
 }
+*/

@@ -4,18 +4,19 @@
 class ring_buffer final
 {
     char* buffer;
-    int rows, cols;
-    int i, j;
-    int next(int index) const;
+    long rows, cols, size;
+    long i, j;
+    long next(long index) const;
 public:
     ring_buffer();
-    ring_buffer(int num_rows, int num_cols);
+    ring_buffer(long num_rows, long num_cols);
     ~ring_buffer();
     bool empty() const;
+    bool full() const;
     char* front();
     char* back();
-    void push_front();
-    void push_back();
+//  void push_front();
+//  void push_back();
 };
 
 #endif // __RING_BUFFER_H__
