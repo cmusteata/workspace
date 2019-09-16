@@ -1,11 +1,13 @@
 #ifndef __RING_BUFFER_H__
 #define __RING_BUFFER_H__
 
+#include <atomic>
+
 class ring_buffer final
 {
     char* buffer;
     long rows, cols, size;
-    long i, j;
+    std::atomic<long> i, j, j2;
     long next(long index) const;
 public:
     ring_buffer();
@@ -16,7 +18,7 @@ public:
     char* front();
     char* back();
 //  void push_front();
-//  void push_back();
+    void push_back();
 };
 
 #endif // __RING_BUFFER_H__
