@@ -7,7 +7,7 @@ class ring_buffer final
 {
     char* buffer;
     long rows, cols, size;
-    std::atomic<long> i, j, j2;
+    std::atomic<long> i, j;
     long next(long index) const;
 public:
     ring_buffer();
@@ -17,8 +17,6 @@ public:
     bool full() const;
     char* front();
     char* back();
-//  void push_front();
-    void push_back();
 };
 
 #endif // __RING_BUFFER_H__

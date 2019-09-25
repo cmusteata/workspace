@@ -8,7 +8,6 @@ ring_buffer::ring_buffer()
 , size(1000*256)
 , i(0)
 , j(256)
-, j2(2*256)
 {
     buffer = static_cast<char*>(operator new(size));
 }
@@ -20,7 +19,6 @@ ring_buffer::ring_buffer(long num_rows, long num_cols)
 , size(num_rows*num_cols)
 , i(0)
 , j(num_cols)
-, j2(2*num_cols)
 {
     buffer = static_cast<char*>(operator new(size));
 }
@@ -46,7 +44,7 @@ bool ring_buffer::empty() const
 inline
 bool ring_buffer::full() const
 {
-    return j2 == i;
+    return next(j) == i;
 }
 
 inline
@@ -65,25 +63,13 @@ char* ring_buffer::front()
 inline
 char* ring_buffer::back()
 {
-    if (j2 == i) // full
+    long next_j = next(j);
+    if (next_j == i) // full
     {
         std::cerr << "queue is full" << std::endl;
         return nullptr;
     }
 
-    return &buffer[j];
-}
-/*
-inline
-void ring_buffer::push_front()
-{
-    i = next(i);
-}
-*/
-inline
-void ring_buffer::push_back()
-{
-    j  = j2;
-    j2 = next(j);
+    return &buffer[j = next_j];
 }
 
