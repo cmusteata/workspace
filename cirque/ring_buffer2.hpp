@@ -4,15 +4,17 @@
 #include <iostream>
 #include <cstring>
 
-template<typename T, size_t size> size_t SizeOf(const T (&)[size]) { return size; };
+template<typename T, size_t size>
+constexpr size_t SizeOf(const T (&)[size])
+{
+    return size;
+};
 
 template <typename T>
 ring_buffer<T>::ring_buffer(int len)
 : length(len)
 , i(0)
 , j(1)
-, next_i(1)
-, next_j(2)
 {
     size_t size = SizeOf(data) * length;
     char* buffer = static_cast<char*>(operator new(size));
@@ -30,57 +32,55 @@ ring_buffer<T>::~ring_buffer()
 template <typename T>
 bool ring_buffer<T>::empty() const
 {
-    return (next_i > i && next_i >= j) || (next_i < i && next_i <= j);
+    return i + 1 == j;
 }
 
 template <typename T>
 bool ring_buffer<T>::full() const
 {
-    return (next_j > j && next_j >= i) || (next_j < j && next_j <= i);
+    return j + 1 == i;
 }
 
 template <typename T>
 const char* ring_buffer<T>::front() const
 {
-    return &data[i];
+    T next_i = i + 1;
+    return next_i == j ? nullptr : &data[next_i];
 }
 
 template <typename T>
 const char* ring_buffer<T>::back() const
 {
-    return &data[j];
+    T next_j = j + 1;
+    return next_j == i ? nullptr : &data[next_j];
 }
 
 template <typename T>
-void ring_buffer<T>::pop_front(char* msg, int msgsize)
+bool ring_buffer<T>::pop_front(char* msg, int msgsize)
 {
-    ++next_i;
-    if (empty())
+    if (i + 1 == j) // empty
     {
-        next_i = i + 1;
         std::cerr << "queue is empty" << std::endl;
-        return nullptr;
+        return false;
     }
 
-    char* front = &data[i];
+    char* front = &data[++i];
     std::memcpy(msg, front, std::min<int>(length, msgsize));
-    ++i;
+    return true;
 }
 
 template <typename T>
-void ring_buffer<T>::push_back(const char* msg, int msgsize)
+bool ring_buffer<T>::push_back(const char* msg, int msgsize)
 {
-    ++next_j;
-    if (full())
+    if (j + 1 == i)
     {
-        next_j = j + 1;
         std::cerr << "queue is full" << std::endl;
-        return nullptr;
+        return false;
     }
 
-    char* back = &data[j];
+    char* back = &data[++j];
     std::memcpy(back, msg, std::min<int>(length, msgsize));
-    ++j;
+    return true;
 }
 
 #endif // __RING_BUFFER2_HPP__
