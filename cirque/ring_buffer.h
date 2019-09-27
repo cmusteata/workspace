@@ -8,6 +8,7 @@ class ring_buffer final
     char* buffer;
     long rows, cols, size;
     std::atomic<long> i, j;
+    long next_i, next_j;
     long next(long index) const;
 public:
     ring_buffer();
