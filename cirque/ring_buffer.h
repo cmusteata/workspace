@@ -1,23 +1,26 @@
 #ifndef __RING_BUFFER_H__
 #define __RING_BUFFER_H__
 
+#include <limits>
 #include <atomic>
 
+template <typename T>
 class ring_buffer final
 {
-    char* buffer;
-    long rows, cols, size;
-    std::atomic<long> i, j;
-    long next_i, next_j;
-    long next(long index) const;
+    int length;
+    char* data[std::numeric_limits<T>::max()+1];
+    std::atomic<T> i, j, next_i, next_j;
 public:
-    ring_buffer();
-    ring_buffer(long num_rows, long num_cols);
+    ring_buffer(int len);
     ~ring_buffer();
     bool empty() const;
     bool full() const;
-    char* front();
-    char* back();
+    const char* front() const;
+    const char* back() const;
+    bool pop_front(char* msg, int msgsize);
+    bool push_back(const char* msg, int msgsize);
 };
+
+#include "ring_buffer.hpp"
 
 #endif // __RING_BUFFER_H__

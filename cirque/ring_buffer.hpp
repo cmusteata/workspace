@@ -1,5 +1,5 @@
-#ifndef __RING_BUFFER2_HPP__
-#define __RING_BUFFER2_HPP__
+#ifndef __RING_BUFFER_HPP__
+#define __RING_BUFFER_HPP__
 
 #include <iostream>
 #include <cstring>
@@ -64,10 +64,9 @@ bool ring_buffer<T>::pop_front(char* msg, int msgsize)
         return false;
     }
 
-    char* front = data[next_i];
+    char* front = data[next_i++];
     std::memcpy(msg, front, std::min<int>(length, msgsize));
     ++i;
-    ++next_i;
     return true;
 }
 
@@ -86,4 +85,4 @@ bool ring_buffer<T>::push_back(const char* msg, int msgsize)
     return true;
 }
 
-#endif // __RING_BUFFER2_HPP__
+#endif // __RING_BUFFER_HPP__

@@ -8,8 +8,8 @@ template <typename T>
 class ring_buffer final
 {
     int length;
-    char* data[std::numeric_limits<T>::max()];
-    std::atomic<T> i, j;
+    char* data[std::numeric_limits<T>::max()+1];
+    std::atomic<T> i, j, next_i, next_j;
 public:
     ring_buffer(int len);
     ~ring_buffer();
