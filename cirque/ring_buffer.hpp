@@ -59,11 +59,7 @@ template <typename T>
 bool ring_buffer<T>::pop_front(char* msg, int msgsize)
 {
     if (next_i == j) // empty
-    {
-        std::cerr << "queue is empty" << std::endl;
         return false;
-    }
-
     char* front = data[next_i++];
     std::memcpy(msg, front, std::min<int>(length, msgsize));
     ++i;
@@ -73,12 +69,8 @@ bool ring_buffer<T>::pop_front(char* msg, int msgsize)
 template <typename T>
 bool ring_buffer<T>::push_back(const char* msg, int msgsize)
 {
-    if (next_j == i)
-    {
-        std::cerr << "queue is full" << std::endl;
+    if (next_j == i) // full
         return false;
-    }
-
     char* back = data[next_j++];
     std::memcpy(back, msg, std::min<int>(length, msgsize));
     ++j;
