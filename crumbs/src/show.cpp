@@ -3,7 +3,7 @@
 #include <sstream>
 #include <string>
 
-void show(int n, std::ostringstream& oss)
+void show(unsigned n, std::ostringstream& oss)
 {
     if (n > 0)
     {
@@ -16,6 +16,7 @@ int main(int argc, char* argv[])
 {
     assert(argc == 2);
     int n = std::stoi(argv[1]);
+    assert(n > 0);
 
     std::ostringstream oss;
     show(n, oss);
