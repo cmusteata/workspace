@@ -2,7 +2,6 @@
 #include <chrono>
 #include <ctime>
 #include <cassert>
-#include "yaml.h"
 #include "algo.h"
 
 int main(int argc, char* argv[])
