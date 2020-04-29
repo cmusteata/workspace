@@ -26,10 +26,8 @@
    62  iwlist wlp3s0
    64  iwlist wlp3s0 scan | less
    65  iw wlp3s0 link
-   66  /etc/init.d/network restart
    67  ifconfig enp0s25 up
    68  /etc/init.d/network restart
-   69  iwlist
    71  iwlist scan bulinux
    74  iw wlp3s0 link
    75  ip enp0s25 link
