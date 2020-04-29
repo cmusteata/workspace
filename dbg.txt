@@ -1,0 +1,6 @@
+sudo yum -y install devtoolset-7-gdb
+. scl_source enable devtoolset-7
+
+sudo yum -y install devtoolset-8-gdb
+. scl_source enable devtoolset-8
+
