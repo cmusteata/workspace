@@ -1,0 +1,11 @@
+git checkout -b feature
+git commit -am "feature branch - first commit etc"
+git commit -am "feature branch - second commit etc"
+git push -u origin feature (to save if necessary)
+git rebase -i master (interactively if necessary)
+git checkout master
+git merge --no-ff feature
+git push origin master
+git branch -d feature
+git push origin :feature (remove feature from repo if already pushed)
+
