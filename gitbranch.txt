@@ -8,4 +8,4 @@ git merge --no-ff feature
 git push origin master
 git branch -d feature
 git push origin :feature (remove feature from repo if already pushed)
-git dummy comment
+git dummy
