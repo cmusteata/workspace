@@ -33,16 +33,17 @@ wget https://raw.githubusercontent.com/git/git/master/contrib/completion/git-pro
 mv git-completion.bash .git-completion.bash
 mv git-prompt.sh .git-prompt.sh
 add to .bashrc file:
-source ~/.git-completion.bash                   #enables shell auto-completion
-source ~/.git-prompt.sh                         #enables __git_ps1 prompt
-export PS1='[\u@\h \W$(__git_ps1 " (%s)")]\$ '  #shows the current branch name next to the command prompt
-export GIT_PS1_SHOWDIRTYSTATE=1                 #shows +/* (staged/unstaged) indicator next to the branch name
-export GIT_PS1_SHOWSTASHSTATE=1                 #shows $ (stashed) indicator next to the branch name
-export GIT_PS1_SHOWUNTRACKEDFILES=1             #shows % (untracked) indicator next to the branch name
-export GIT_PS1_SHOWUPSTREAM=auto                #shows </>/<>/= (behind/ahead/diverged/nodiff) indicator
-export GIT_PS1_STATESEPARATOR=                  #changes the default separator (SP) between the PS1 and branch name
-export GIT_PS1_COMPRESSSPARSESTATE=1            #shows the sparse-checkout operation as '?' instead of "|SPARSE"
-export GIT_PS1_DESCRIBE_STYLE=default           #shows the commit identity (default, tag, branch, contains)
-export GIT_PS1_SHOWCOLORHINTS=1                 #shows a colored hint about the dirty state 
-export GIT_PS1_HIDE_IF_PWD_IGNORED=1            #shows nothing if the current directory is ignored by git
+source ~/.git-completion.bash           #enables shell auto-completion
+source ~/.git-prompt.sh                 #enables __git_ps1 prompt
+export PS1='[\u@\h \W$(__git_ps1 " (%s)")]\$ '        #shows the current branch next to the command prompt
+export PROMPT_COMMAND='__git_ps1 "\u@\h:\w" "\\\$ "'  #alternative for a slightly faster prompt
+export GIT_PS1_SHOWDIRTYSTATE=1         #shows +/* (staged/unstaged) indicator next to the branch name
+export GIT_PS1_SHOWSTASHSTATE=1         #shows $ (stashed) indicator next to the branch name
+export GIT_PS1_SHOWUNTRACKEDFILES=1     #shows % (untracked) indicator next to the branch name
+export GIT_PS1_SHOWUPSTREAM=auto        #shows </>/<>/= (behind/ahead/diverged/nodiff) indicator
+export GIT_PS1_STATESEPARATOR=          #changes the default separator (SP) between the PS1 and branch name
+export GIT_PS1_COMPRESSSPARSESTATE=1    #shows the sparse-checkout operation as '?' instead of "|SPARSE"
+export GIT_PS1_DESCRIBE_STYLE=default   #shows the commit identity (default, tag, branch, contains)
+export GIT_PS1_SHOWCOLORHINTS=1         #shows a colored hint about the dirty state (PROMPT_COMMAND only)
+export GIT_PS1_HIDE_IF_PWD_IGNORED=1    #shows nothing if the current directory is ignored by git (ditto)
 
