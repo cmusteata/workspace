@@ -3,6 +3,7 @@ git commit -am "feature branch - first commit etc"
 git commit -am "feature branch - second commit etc"
 git push -u origin feature (to save if necessary)
 git rebase -i master (interactively if necessary)
+git push --force-with-lease (be careful when multiple users on feature)
 git checkout master
 git merge --no-ff feature
 git push origin master
